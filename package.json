@@ -1,0 +1,15 @@
+{
+  "name": "@maldan/gam-app-artbook",
+  "version": "0.0.1",
+  "description": "Art Book",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "Maldan",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maldan/gam-app-artbook.git"
+  },
+  "license": "MIT",
+  "devDependencies": {}
+}
