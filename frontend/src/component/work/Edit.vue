@@ -1,10 +1,8 @@
 <template>
   <div :class="$style.container">
     <div :class="$style.window">
-      <Input placeholder="Priotiry..." style="margin-bottom: 10px" v-model="priority" />
-      <TextArea placeholder="Description..." style="margin-bottom: 10px" v-model="description" />
+      <Input placeholder="Time..." style="margin-bottom: 10px" v-model="time" />
       <Input placeholder="Created..." style="margin-bottom: 10px" v-model="created" />
-      <Input placeholder="Deadline..." style="margin-bottom: 10px" v-model="deadline" />
 
       <div style="display: flex">
         <Button @click="$emit('close')" text="Cancel" style="margin-right: 5px" />
@@ -25,34 +23,29 @@ import Moment from 'moment';
 export default defineComponent({
   props: {
     id: String,
-    date: Object,
+    workId: String,
   },
   components: { Button, TextArea, Input },
   async mounted() {
-    /*const d = await RestApi.todo.get(this.id + '');
-    this.priority = d.priority + '';
-    this.description = d.description + '';
+    const d = await RestApi.image.get(this.workId + '', this.id + '');
+    this.time = Moment.utc(d.time * 1000).format('HH:mm:ss');
     this.created = Moment(d.created).format('YYYY-MM-DD HH:mm:ss');
-    this.deadline = Moment(d.deadline).format('YYYY-MM-DD HH:mm:ss');*/
   },
   methods: {
     async submit() {
-      /*await RestApi.todo.update({
+      await RestApi.image.update({
         id: this.id + '',
-        priority: Number(this.priority),
-        description: this.description,
+        workId: this.workId + '',
+        time: Moment.duration(this.time).asSeconds(),
         created: this.created,
-        deadline: this.deadline,
       });
-      this.$emit('close');*/
+      this.$emit('close');
     },
   },
   data() {
     return {
-      priority: '',
-      description: '',
-      created: '',
-      deadline: Moment().format('YYYY-MM-DD HH:mm:ss'),
+      time: '00:00',
+      created: Moment().format('YYYY-MM-DD HH:mm:ss'),
     };
   },
 });

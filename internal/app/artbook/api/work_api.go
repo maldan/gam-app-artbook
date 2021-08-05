@@ -45,7 +45,19 @@ func (r WorkApi) PostIndex(args core.Work) {
 
 // Update
 func (r WorkApi) PatchIndex(args core.Work) {
-	cmhp_file.WriteJSON(core.DataDir+"/work/"+args.Id+".json", &args)
+	// Get file
+	var item core.Work
+	err := cmhp_file.ReadJSON(core.DataDir+"/work/"+args.Id+".json", &item)
+	if err != nil {
+		restserver.Fatal(500, restserver.ErrorType.NotFound, "id", "Work not found!")
+	}
+
+	// Set values
+	item.Title = args.Title
+	item.Tags = args.Tags
+
+	// Write to file
+	cmhp_file.WriteJSON(core.DataDir+"/work/"+args.Id+".json", &item)
 }
 
 // Delete

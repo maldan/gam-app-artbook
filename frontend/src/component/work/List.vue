@@ -9,18 +9,45 @@
 
     <!-- List -->
     <div :class="$style.item_list">
-      <div
-        @click="$router.push(`/work/${item.id}`)"
-        class="clickable"
-        v-for="item in item.imageList"
-        :key="item.id"
-        :class="$style.block"
-      ></div>
+      <div v-for="item in item.imageList" :key="item.id" :class="$style.block">
+        <img
+          @click.stop="moveDown(item.id)"
+          class="clickable"
+          src="../../asset/move_down.svg"
+          alt=""
+          style="position: absolute; right: 75px; top: 12px"
+          draggable="false"
+        />
+        <img
+          @click.stop="(editId = item.id), (isEdit = true)"
+          class="clickable"
+          src="../../asset/pencil.svg"
+          alt=""
+          style="position: absolute; right: 42px; top: 12px"
+          draggable="false"
+        />
+        <img
+          @click.stop="remove(item.id)"
+          class="clickable"
+          src="../../asset/trash.svg"
+          alt=""
+          style="position: absolute; right: 12px; top: 12px"
+          draggable="false"
+        />
+
+        <img :src="item.url" style="width: 80%; margin: 0 auto" draggable="false" />
+        <div style="display: flex; flex: 1; margin-top: 10px">
+          <div style="flex: 1">{{ $root.moment.utc(item.time * 1000).format('HH:mm:ss') }}</div>
+          <div style="flex: 1">
+            {{ $root.moment(item.created).format('DD MMM YYYY HH:mm:ss') }}
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Modal -->
-    <Add v-if="isAdd" :workId="item.id" @close="(isAdd = false), refresh()" />
-    <Edit :id="editId" v-if="isEdit" @close="(isEdit = false), refresh()" />
+    <Add :workId="item.id" v-if="isAdd" @close="(isAdd = false), refresh()" />
+    <Edit :id="editId" :workId="item.id" v-if="isEdit" @close="(isEdit = false), refresh()" />
   </div>
 </template>
 
@@ -43,8 +70,12 @@ export default defineComponent({
     },
     async remove(id: string) {
       if (confirm('Are you sure?')) {
-        // await RestApi.todo.delete(id);
+        await RestApi.image.delete(this['$route'].params.id as string, id);
       }
+      this.refresh();
+    },
+    async moveDown(id: string) {
+      await RestApi.image.moveDown(this['$route'].params.id as string, id);
       this.refresh();
     },
   },
@@ -76,55 +107,8 @@ export default defineComponent({
       box-sizing: border-box;
       position: relative;
       margin-bottom: 10px;
-
-      .header {
-        display: flex;
-
-        .left,
-        .right,
-        .left2 {
-          padding: 10px 15px;
-          background: #0000004d;
-          border-radius: 6px 6px 0 0;
-          color: #979797;
-          font-weight: bold;
-
-          span {
-            color: #979797;
-            font-style: italic;
-            font-weight: 300;
-          }
-        }
-
-        .left {
-          color: #cfda1e;
-        }
-
-        .left2 {
-          margin-left: 10px;
-          color: #1edaab;
-          font-weight: bold;
-        }
-
-        img {
-          margin-left: 15px;
-        }
-
-        .right {
-          margin-left: 15px;
-        }
-      }
-
-      .body {
-        padding: 10px 15px;
-        background: #0000004d;
-        border-radius: 0 0 6px 6px;
-        color: #979797;
-      }
-
-      &:last-child {
-        margin-bottom: 0;
-      }
+      display: flex;
+      flex-direction: column;
     }
   }
 }

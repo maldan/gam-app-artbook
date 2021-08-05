@@ -54,7 +54,12 @@ export default defineComponent({
   },
   methods: {
     async submit() {
-      await RestApi.image.add(this.workId + '', 0, '', this.created);
+      await RestApi.image.add(
+        this.workId + '',
+        Moment.duration(this.time).asSeconds(),
+        this.imageFile,
+        this.created,
+      );
       this.$emit('close');
     },
   },
@@ -62,7 +67,7 @@ export default defineComponent({
     return {
       image: '',
       imageFile: null as any,
-      time: '00:00',
+      time: '00:00:00',
       created: Moment().format('YYYY-MM-DD HH:mm:ss'),
     };
   },

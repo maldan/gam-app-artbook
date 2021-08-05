@@ -7,6 +7,7 @@ import (
 
 	"github.com/maldan/gam-app-artbook/internal/app/artbook/api"
 	"github.com/maldan/gam-app-artbook/internal/app/artbook/core"
+	"github.com/maldan/go-cmhp/cmhp_s3"
 	"github.com/maldan/go-restserver"
 )
 
@@ -24,11 +25,15 @@ func Start(frontFs embed.FS) {
 	// Set
 	core.DataDir = *dataDir
 
+	// Init s3
+	cmhp_s3.Start(core.DataDir + "/config.json")
+
 	// Init server
 	restserver.Start(fmt.Sprintf("%s:%d", *host, *port), map[string]interface{}{
 		"/": restserver.VirtualFs{Root: "frontend/build/", Fs: frontFs},
 		"/api": map[string]interface{}{
-			"work": api.WorkApi{},
+			"work":  api.WorkApi{},
+			"image": api.ImageApi{},
 		},
 	})
 }

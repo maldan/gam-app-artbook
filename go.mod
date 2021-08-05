@@ -3,6 +3,7 @@ module github.com/maldan/gam-app-artbook
 go 1.16
 
 // replace github.com/maldan/go-restserver => ../../../go_lib/restserver
+replace github.com/maldan/go-cmhp => ../../../go_lib/cmhp
 
 require (
 	github.com/aws/aws-sdk-go v1.40.6

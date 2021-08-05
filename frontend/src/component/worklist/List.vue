@@ -24,8 +24,12 @@
           style="position: absolute; right: 12px; top: 12px"
         />
 
-        <div>{{ item.title }}</div>
-        <div>{{ item.tags.join(', ') }}</div>
+        <img :class="$style.preview" v-if="item.imageList[0]" :src="item.imageList[0].thumbnail" />
+
+        <div :class="$style.title">{{ item.title }}</div>
+        <div :class="$style.tags">
+          <div v-for="x in item.tags" :class="$style.tag" :key="x">{{ x }}</div>
+        </div>
       </div>
     </div>
 
@@ -64,7 +68,7 @@ export default defineComponent({
       isAdd: false,
       isEdit: false,
       editId: '',
-      list: [],
+      list: [] as any[],
     };
   },
 });
@@ -74,7 +78,7 @@ export default defineComponent({
 .list {
   .item_list {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 10px;
 
     .block {
@@ -86,53 +90,33 @@ export default defineComponent({
       box-sizing: border-box;
       position: relative;
 
-      .header {
+      .preview {
+        display: block;
+        width: 100%;
+      }
+
+      .title {
+        background: #4a4a4a;
+        padding: 5px;
+        color: #dadada;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+
+      .tags {
         display: flex;
+        flex-wrap: wrap;
 
-        .left,
-        .right,
-        .left2 {
-          padding: 10px 15px;
-          background: #0000004d;
-          border-radius: 6px 6px 0 0;
-          color: #979797;
+        .tag {
+          background: #00bd0e;
+          color: #fefefe;
+          padding: 5px 10px;
+          border-radius: 2px;
+          font-size: 14px;
           font-weight: bold;
-
-          span {
-            color: #979797;
-            font-style: italic;
-            font-weight: 300;
-          }
+          margin-right: 5px;
+          margin-top: 10px;
         }
-
-        .left {
-          color: #cfda1e;
-        }
-
-        .left2 {
-          margin-left: 10px;
-          color: #1edaab;
-          font-weight: bold;
-        }
-
-        img {
-          margin-left: 15px;
-        }
-
-        .right {
-          margin-left: 15px;
-        }
-      }
-
-      .body {
-        padding: 10px 15px;
-        background: #0000004d;
-        border-radius: 0 0 6px 6px;
-        color: #979797;
-      }
-
-      &:last-child {
-        margin-bottom: 0;
       }
     }
   }

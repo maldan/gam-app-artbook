@@ -3,7 +3,6 @@
     <div :class="$style.window">
       <Input placeholder="Title..." style="margin-bottom: 10px" v-model="title" />
       <Input placeholder="Tags..." style="margin-bottom: 10px" v-model="tags" />
-      <Input placeholder="Created..." style="margin-bottom: 10px" v-model="created" />
 
       <div style="display: flex">
         <Button @click="$emit('close')" text="Cancel" style="margin-right: 5px" />
