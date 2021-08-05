@@ -1,6 +1,6 @@
 {
   "name": "@maldan/gam-app-artbook",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Art Book",
   "main": "index.js",
   "scripts": {},

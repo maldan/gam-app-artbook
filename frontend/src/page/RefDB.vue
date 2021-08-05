@@ -1,16 +1,15 @@
 <template>
-  <div>
-    Test
+  <div class="main">
+    <Header />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { RestApi } from '../util/RestApi';
+import Header from '../component/Header.vue';
 
 export default defineComponent({
-  props: {},
-  components: {},
+  components: { Header },
   async mounted() {},
   methods: {},
   data: () => {
@@ -19,4 +18,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.main {
+  padding: 10px;
+}
+</style>
