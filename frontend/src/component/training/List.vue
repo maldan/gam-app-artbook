@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.list">
     <Button
-      text="Create new project"
+      text="Add image"
       icon="add"
       @click="isAdd = true"
       style="width: 100%; margin-bottom: 10px"
@@ -10,7 +10,7 @@
     <!-- List -->
     <div :class="$style.item_list">
       <div
-        @click="$router.push(`/work/${item.id}`)"
+        @click="show(item.url)"
         class="clickable"
         v-for="(item, i) in list"
         :key="item.id"
@@ -25,16 +25,20 @@
           style="position: absolute; right: 12px; top: 12px"
         />
 
-        <img
-          :class="$style.preview"
-          v-if="item.imageList[0]"
-          :src="item.imageList[item.imageList.length - 1].thumbnail"
-        />
+        <img :class="$style.preview" :src="item.thumbnail" />
 
         <div :class="$style.title">{{ item.title }}</div>
-        <div v-if="item.imageList[0]" :class="$style.info">
-          <div>{{ totalTime(item.imageList) }}</div>
-          <div>{{ lastTime(item.imageList) }}</div>
+        <div :class="$style.info">
+          <div>
+            {{
+              $root.moment
+                .utc(item.time * 1000)
+                .format('H %1 m %2')
+                .replace('%1', 'h')
+                .replace('%2', 'm')
+            }}
+          </div>
+          <div>{{ $root.moment(item.created).format('DD MMM YYYY') }}</div>
         </div>
         <div :class="$style.tags">
           <div v-for="x in item.tags" :class="$style.tag" :key="x">{{ x }}</div>
@@ -64,8 +68,7 @@ export default defineComponent({
   },
   methods: {
     async refresh() {
-      this.list = await RestApi.work.getList();
-      console.log(this.list);
+      this.list = await RestApi.training.getList();
     },
     async remove(id: string) {
       if (confirm('Are you sure?')) {
@@ -73,21 +76,8 @@ export default defineComponent({
       }
       this.refresh();
     },
-    totalTime(imageList: any[]) {
-      let out = 0;
-      for (let i = 0; i < imageList.length; i++) {
-        out += imageList[i].time;
-      }
-      return Moment.utc(out * 1000)
-        .format('H %1 m %2')
-        .replace('%1', 'h')
-        .replace('%2', 'm');
-    },
-    lastTime(imageList: any[]) {
-      let times = (JSON.parse(JSON.stringify(imageList)) as any).sort(
-        (a: any, b: any) => new Date(a.created).getTime() - new Date(b.created).getTime(),
-      );
-      return Moment(times[0].created).format('DD MMM YYYY');
+    show(url: string) {
+      window.open(url, '_blank');
     },
   },
   data: () => {
@@ -96,6 +86,7 @@ export default defineComponent({
       isEdit: false,
       editId: '',
       list: [] as any[],
+      selected: null as any,
     };
   },
 });

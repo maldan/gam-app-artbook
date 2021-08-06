@@ -21,8 +21,19 @@ type Work struct {
 }
 
 type Training struct {
+	Id        string    `json:"id"`
+	Title     string    `json:"title"`
+	Tags      []string  `json:"tags"`
+	Time      int       `json:"time"`
+	Url       string    `json:"url"`
+	Thumbnail string    `json:"thumbnail"`
+	Created   time.Time `json:"created"`
+}
+
+type Reference struct {
 	Id        string   `json:"id"`
-	Title     string   `json:"title"`
+	Category  string   `json:"category"`
 	Tags      []string `json:"tags"`
-	ImageList []Image  `json:"imageList"`
+	Url       string   `json:"url"`
+	Thumbnail string   `json:"thumbnail"`
 }

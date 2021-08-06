@@ -30,7 +30,10 @@ export default defineComponent({
     async submit() {
       await RestApi.work.add(
         this.title,
-        this.tags.split(',').map((x: string) => x.trim()),
+        this.tags
+          .split(',')
+          .map((x: string) => x.trim())
+          .filter(Boolean),
       );
       this.$emit('close');
     },

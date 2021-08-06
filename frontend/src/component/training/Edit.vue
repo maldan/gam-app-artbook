@@ -1,6 +1,8 @@
 <template>
   <div :class="$style.container">
     <div :class="$style.window">
+      <Input placeholder="Title..." style="margin-bottom: 10px" v-model="title" />
+      <Input placeholder="Tags..." style="margin-bottom: 10px" v-model="tags" />
       <Input placeholder="Time..." style="margin-bottom: 10px" v-model="time" />
       <Input placeholder="Created..." style="margin-bottom: 10px" v-model="created" />
 
@@ -23,19 +25,24 @@ import Moment from 'moment';
 export default defineComponent({
   props: {
     id: String,
-    workId: String,
   },
   components: { Button, TextArea, Input },
   async mounted() {
-    const d = await RestApi.image.get(this.workId + '', this.id + '');
+    const d = await RestApi.training.get(this.id + '');
+    this.title = d.title;
+    this.tags = d.tags.join(', ');
     this.time = Moment.utc(d.time * 1000).format('HH:mm');
     this.created = Moment(d.created).format('YYYY-MM-DD HH:mm:ss');
   },
   methods: {
     async submit() {
-      await RestApi.image.update({
+      await RestApi.training.update({
         id: this.id + '',
-        workId: this.workId + '',
+        title: this.title,
+        tags: this.tags
+          .split(',')
+          .map((x: string) => x.trim())
+          .filter(Boolean),
         time: Moment.duration(this.time + ':00').asSeconds(),
         created: this.created,
       });
@@ -44,6 +51,8 @@ export default defineComponent({
   },
   data() {
     return {
+      title: '',
+      tags: '',
       time: '00:00',
       created: Moment().format('YYYY-MM-DD HH:mm:ss'),
     };

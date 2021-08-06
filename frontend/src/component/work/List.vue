@@ -37,7 +37,15 @@
 
         <img :src="item.url" style="width: 80%; margin: 0 auto" draggable="false" />
         <div style="display: flex; flex: 1; margin-top: 10px">
-          <div style="flex: 1">{{ $root.moment.utc(item.time * 1000).format('HH:mm:ss') }}</div>
+          <div style="flex: 1">
+            {{
+              $root.moment
+                .utc(item.time * 1000)
+                .format('H %1 m %2')
+                .replace('%1', 'hour')
+                .replace('%2', 'mins')
+            }}
+          </div>
           <div style="flex: 1">
             {{ $root.moment(item.created).format('DD MMM YYYY HH:mm:ss') }}
           </div>

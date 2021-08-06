@@ -35,7 +35,10 @@ export default defineComponent({
       await RestApi.work.update({
         id: this.id + '',
         title: this.title,
-        tags: this.tags.split(',').map((x: string) => x.trim()),
+        tags: this.tags
+          .split(',')
+          .map((x: string) => x.trim())
+          .filter(Boolean),
       });
       this.$emit('close');
     },

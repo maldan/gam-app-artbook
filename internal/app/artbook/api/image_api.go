@@ -2,7 +2,6 @@ package api
 
 import (
 	"os"
-	"time"
 
 	"github.com/maldan/gam-app-artbook/internal/app/artbook/core"
 	"github.com/maldan/go-cmhp/cmhp_crypto"
@@ -92,7 +91,7 @@ func (r ImageApi) PostIndex(args ArgsImage) {
 		Url:       url,
 		Thumbnail: thumbUrl,
 		Time:      args.Time,
-		Created:   time.Now(),
+		Created:   args.Created,
 	})
 	cmhp_file.WriteJSON(core.DataDir+"/work/"+args.WorkId+".json", &work)
 }

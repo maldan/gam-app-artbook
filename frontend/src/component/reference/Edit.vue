@@ -1,8 +1,8 @@
 <template>
   <div :class="$style.container">
     <div :class="$style.window">
-      <Input placeholder="Time..." style="margin-bottom: 10px" v-model="time" />
-      <Input placeholder="Created..." style="margin-bottom: 10px" v-model="created" />
+      <Input placeholder="Category..." style="margin-bottom: 10px" v-model="category" />
+      <Input placeholder="Tags..." style="margin-bottom: 10px" v-model="tags" />
 
       <div style="display: flex">
         <Button @click="$emit('close')" text="Cancel" style="margin-right: 5px" />
@@ -23,29 +23,30 @@ import Moment from 'moment';
 export default defineComponent({
   props: {
     id: String,
-    workId: String,
   },
   components: { Button, TextArea, Input },
   async mounted() {
-    const d = await RestApi.image.get(this.workId + '', this.id + '');
-    this.time = Moment.utc(d.time * 1000).format('HH:mm');
-    this.created = Moment(d.created).format('YYYY-MM-DD HH:mm:ss');
+    const d = await RestApi.reference.get(this.id + '');
+    this.category = d.category;
+    this.tags = d.tags.join(', ');
   },
   methods: {
     async submit() {
-      await RestApi.image.update({
+      await RestApi.reference.update({
         id: this.id + '',
-        workId: this.workId + '',
-        time: Moment.duration(this.time + ':00').asSeconds(),
-        created: this.created,
+        category: this.category,
+        tags: this.tags
+          .split(',')
+          .map((x: string) => x.trim())
+          .filter(Boolean),
       });
       this.$emit('close');
     },
   },
   data() {
     return {
-      time: '00:00',
-      created: Moment().format('YYYY-MM-DD HH:mm:ss'),
+      category: '',
+      tags: '',
     };
   },
 });

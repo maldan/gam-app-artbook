@@ -7,8 +7,9 @@
         alt=""
         style="width: 100%; max-width: 600px; margin-bottom: 10px"
       />
-      <Input placeholder="Time..." style="margin-bottom: 10px" v-model="time" />
-      <Input placeholder="Created..." style="margin-bottom: 10px" v-model="created" />
+
+      <Input placeholder="Category..." style="margin-bottom: 10px" v-model="category" />
+      <Input placeholder="Tags..." style="margin-bottom: 10px" v-model="tags" />
 
       <div style="display: flex">
         <Button @click="$emit('close')" text="Cancel" style="margin-right: 5px" />
@@ -24,11 +25,10 @@ import { RestApi } from '../../util/RestApi';
 import Button from '../Button.vue';
 import TextArea from '../TextArea.vue';
 import Input from '../Input.vue';
-import Moment from 'moment';
 
 export default defineComponent({
   props: {
-    workId: String,
+    date: Object,
   },
   components: { Button, TextArea, Input },
   async mounted() {
@@ -54,11 +54,13 @@ export default defineComponent({
   },
   methods: {
     async submit() {
-      await RestApi.image.add(
-        this.workId + '',
-        Moment.duration(this.time + ':00').asSeconds(),
+      await RestApi.reference.add(
+        this.category,
+        this.tags
+          .split(',')
+          .map((x: string) => x.trim())
+          .filter(Boolean),
         this.imageFile,
-        this.created,
       );
       this.$emit('close');
     },
@@ -67,8 +69,9 @@ export default defineComponent({
     return {
       image: '',
       imageFile: null as any,
-      time: '00:00',
-      created: Moment().format('YYYY-MM-DD HH:mm:ss'),
+
+      category: '',
+      tags: '',
     };
   },
 });
