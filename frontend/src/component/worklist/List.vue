@@ -76,16 +76,15 @@ export default defineComponent({
     totalTime(imageList: any[]) {
       let out = 0;
       for (let i = 0; i < imageList.length; i++) {
-        out += imageList[i].time;
+        out += ~~imageList[i].time;
       }
-      return Moment.utc(out * 1000)
-        .format('H %1 m %2')
-        .replace('%1', 'h')
-        .replace('%2', 'm');
+      const h = ~~(out / 3600);
+      const m = (out / 60) % 60;
+      return `${h} h ${m} m`;
     },
     lastTime(imageList: any[]) {
       let times = (JSON.parse(JSON.stringify(imageList)) as any).sort(
-        (a: any, b: any) => new Date(a.created).getTime() - new Date(b.created).getTime(),
+        (a: any, b: any) => new Date(b.created).getTime() - new Date(a.created).getTime(),
       );
       return Moment(times[0].created).format('DD MMM YYYY');
     },
@@ -103,10 +102,15 @@ export default defineComponent({
 
 <style lang="scss" module>
 .list {
+  height: calc(100% - 50px);
+
   .item_list {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 10px;
+    height: calc(100% - 60px);
+    overflow-y: auto;
+    grid-auto-rows: max-content;
 
     .block {
       width: 100%;
@@ -116,6 +120,7 @@ export default defineComponent({
       color: #c5c5c5;
       box-sizing: border-box;
       position: relative;
+      height: max-content;
 
       .preview {
         display: block;

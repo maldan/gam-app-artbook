@@ -27,7 +27,10 @@
       </div>
     </div>
     <div style="margin-top: 15px; color: #979797; display: flex; align-items: center">
-      <div style="margin-right: 15px">Date: {{ $root.moment(date).format('DD MMM YYYY') }}</div>
+      <div style="margin-right: 15px">
+        Date: {{ $root.moment(date).format('DD MMM YYYY') }} | Total:
+        {{ totalTime(total) }}
+      </div>
 
       <button
         v-for="x in [-6, -5, -4, -3, -2, -1, 0]"
@@ -66,10 +69,19 @@ export default defineComponent({
     this.refresh();
   },
   methods: {
+    totalTime(time: number) {
+      const h = ~~(time / 3600);
+      const m = (time / 60) % 60;
+      return `${h} h ${m} m`;
+    },
     getPower(time: number) {
       if (time === undefined) return 'transparent';
       if (time <= 0) return '#e2e2e223';
-      else return `rgb(243, 117, 38, ${time / 18000})`;
+      let power = time / 18000;
+      if (power <= 0.3) {
+        power = 0.3;
+      }
+      return `rgb(243, 117, 38, ${power})`;
     },
     async refresh() {
       this.days.length = 0;
@@ -88,6 +100,10 @@ export default defineComponent({
       }
 
       this.map = await RestApi.work.getYearMap(Moment(this.date).format('YYYY-MM-DD'));
+      this.total = 0;
+      for (let x in this.map) {
+        this.total += ~~(this.map as any)[x] as number;
+      }
     },
     getDates(month: number): Date[] {
       const year = this.date.getFullYear();
@@ -114,6 +130,7 @@ export default defineComponent({
       days: [] as any[],
       date: new Date(),
       map: {},
+      total: 0,
     };
   },
 });

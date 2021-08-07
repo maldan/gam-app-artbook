@@ -95,10 +95,15 @@ export default defineComponent({
 
 <style lang="scss" module>
 .list {
+  height: calc(100% - 90px);
+
   .item_list {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 10px;
+    height: calc(100% - 65px);
+    overflow-y: auto;
+    grid-auto-rows: max-content;
 
     .block {
       width: 100%;
@@ -108,6 +113,7 @@ export default defineComponent({
       color: #c5c5c5;
       box-sizing: border-box;
       position: relative;
+      height: max-content;
 
       .preview {
         display: block;

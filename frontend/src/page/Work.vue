@@ -24,5 +24,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .main {
   padding: 10px;
+  height: 100%;
+  box-sizing: border-box;
 }
 </style>

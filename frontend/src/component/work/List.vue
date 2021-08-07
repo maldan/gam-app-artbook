@@ -105,7 +105,12 @@ export default defineComponent({
 
 <style lang="scss" module>
 .list {
+  height: calc(100% - 50px);
+
   .item_list {
+    height: calc(100% - 60px);
+    overflow-y: auto;
+
     .block {
       width: 100%;
       font-size: 15px;

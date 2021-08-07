@@ -37,7 +37,7 @@ func (r WorkApi) GetList() []core.Work {
 		// First max date
 		maxDate1 := time.Date(0, 0, 0, 0, 0, 0, 0, time.Local)
 		for ii, e := range out[i].ImageList {
-			if ii == 0 || e.Created.Unix() < maxDate1.Unix() {
+			if ii == 0 || e.Created.Unix() > maxDate1.Unix() {
 				maxDate1 = e.Created
 			}
 		}
@@ -45,7 +45,7 @@ func (r WorkApi) GetList() []core.Work {
 		// Second max date
 		maxDate2 := time.Date(0, 0, 0, 0, 0, 0, 0, time.Local)
 		for ii, e := range out[j].ImageList {
-			if ii == 0 || e.Created.Unix() < maxDate2.Unix() {
+			if ii == 0 || e.Created.Unix() > maxDate2.Unix() {
 				maxDate2 = e.Created
 			}
 		}
@@ -64,6 +64,14 @@ func (r WorkApi) GetYearMap(args ArgsDate) map[string]int {
 		workList = append(workList, r.GetIndex(ArgsId{Id: strings.Replace(file.Name(), ".json", "", 1)}))
 	}
 
+	// Get training list
+	t := TrainingApi{}
+	files, _ = cmhp_file.List(core.DataDir + "/training")
+	trainingList := make([]core.Training, 0)
+	for _, file := range files {
+		trainingList = append(trainingList, t.GetIndex(ArgsId{Id: strings.Replace(file.Name(), ".json", "", 1)}))
+	}
+
 	// Fill empty
 	out := map[string]int{}
 	t1 := time.Date(args.Date.Year(), time.January, 1, 0, 0, 0, 0, time.UTC)
@@ -75,7 +83,14 @@ func (r WorkApi) GetYearMap(args ArgsDate) map[string]int {
 	// Fill real
 	for _, work := range workList {
 		for _, image := range work.ImageList {
-			out[cmhp_time.Format(image.Created, "YYYY-MM-DD")] += image.Time
+			if image.Created.Year() == args.Date.Year() {
+				out[cmhp_time.Format(image.Created, "YYYY-MM-DD")] += image.Time
+			}
+		}
+	}
+	for _, training := range trainingList {
+		if training.Created.Year() == args.Date.Year() {
+			out[cmhp_time.Format(training.Created, "YYYY-MM-DD")] += training.Time
 		}
 	}
 
