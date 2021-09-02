@@ -37,5 +37,8 @@ func Start(frontFs embed.FS) {
 			"training":  api.TrainingApi{},
 			"reference": api.ReferenceApi{},
 		},
+		"/system": map[string]interface{}{
+			"config": api.ConfigApi{},
+		},
 	})
 }
