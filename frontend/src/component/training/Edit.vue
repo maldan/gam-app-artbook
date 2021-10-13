@@ -7,8 +7,8 @@
       <Input placeholder="Created..." style="margin-bottom: 10px" v-model="created" />
 
       <div style="display: flex">
-        <Button @click="$emit('close')" text="Cancel" style="margin-right: 5px" />
-        <Button @click="submit()" text="Save" icon="add" style="margin-left: 5px" />
+        <ui-button @click="$emit('close')" text="Cancel" style="margin-right: 5px" />
+        <ui-button @click="submit()" text="Save" icon="add" style="margin-left: 5px" />
       </div>
     </div>
   </div>
@@ -17,7 +17,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { RestApi } from '../../util/RestApi';
-import Button from '../Button.vue';
 import TextArea from '../TextArea.vue';
 import Input from '../Input.vue';
 import Moment from 'moment';
@@ -26,7 +25,7 @@ export default defineComponent({
   props: {
     id: String,
   },
-  components: { Button, TextArea, Input },
+  components: { TextArea, Input },
   async mounted() {
     const d = await RestApi.training.get(this.id + '');
     this.title = d.title;

@@ -1,13 +1,13 @@
 <template>
   <div :class="$style.list">
-    <Button
+    <ui-button
       text="Add image"
-      icon="add"
+      icon="plus"
       @click="isAdd = true"
       style="width: 100%; margin-bottom: 10px"
     />
 
-    <Input placeholder="Filter..." style="margin-bottom: 10px" v-model="filter" />
+    <ui-input placeholder="Filter..." style="margin-bottom: 10px" v-model="filter" />
 
     <!-- List -->
     <div :class="$style.item_list">
@@ -55,14 +55,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { RestApi } from '../../util/RestApi';
-import Button from '../Button.vue';
 import Add from './Add.vue';
 import Edit from './Edit.vue';
 import Input from '../Input.vue';
 
 export default defineComponent({
   props: {},
-  components: { Button, Add, Edit, Input },
+  components: { Add, Edit, Input },
   async mounted() {
     this.refresh();
   },

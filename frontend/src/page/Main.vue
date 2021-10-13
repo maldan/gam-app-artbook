@@ -1,21 +1,26 @@
 <template>
   <div class="main">
-    <Header />
-
-    <div class="block" style="margin-top: 10px">
-      <Schedule />
+    <div class="block">
+      <ui-schedule
+        :map="$store.state.statistics.yearMap"
+        :max="6"
+        :date="$store.state.statistics.date"
+        :yearRange="[-6, -5, -4, -3, -2, -1, 0]"
+        color="#f57202"
+        @select="$store.dispatch('statistics/setDate', $event)"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Header from '../component/Header.vue';
-import Schedule from '../component/worklist/Schedule.vue';
 
 export default defineComponent({
-  components: { Header, Schedule },
-  async mounted() {},
+  components: {},
+  async mounted() {
+    this.$store.dispatch('statistics/getYearMap');
+  },
   methods: {},
   data: () => {
     return {};

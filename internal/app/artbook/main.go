@@ -8,7 +8,10 @@ import (
 	"github.com/maldan/gam-app-artbook/internal/app/artbook/api"
 	"github.com/maldan/gam-app-artbook/internal/app/artbook/core"
 	"github.com/maldan/go-cmhp/cmhp_s3"
-	"github.com/maldan/go-restserver"
+	"github.com/maldan/go-rapi"
+	"github.com/maldan/go-rapi/rapi_core"
+	"github.com/maldan/go-rapi/rapi_rest"
+	"github.com/maldan/go-rapi/rapi_vfs"
 )
 
 func Start(frontFs embed.FS) {
@@ -29,7 +32,7 @@ func Start(frontFs embed.FS) {
 	cmhp_s3.Start(core.DataDir + "/config.json")
 
 	// Init server
-	restserver.Start(fmt.Sprintf("%s:%d", *host, *port), map[string]interface{}{
+	/*restserver.Start(fmt.Sprintf("%s:%d", *host, *port), map[string]interface{}{
 		"/": restserver.VirtualFs{Root: "frontend/build/", Fs: frontFs},
 		"/api": map[string]interface{}{
 			"work":      api.WorkApi{},
@@ -40,5 +43,23 @@ func Start(frontFs embed.FS) {
 		"/system": map[string]interface{}{
 			"config": api.ConfigApi{},
 		},
+	})*/
+
+	// Start server
+	rapi.Start(rapi.Config{
+		Host: fmt.Sprintf("%s:%d", *host, *port),
+		Router: map[string]rapi_core.Handler{
+			"/": rapi_vfs.VFSHandler{
+				Root: "frontend/build",
+				Fs:   frontFs,
+			},
+			"/api": rapi_rest.ApiHandler{
+				Controller: map[string]interface{}{
+					"art":        api.ArtApi{},
+					"statistics": api.StatisticsApi{},
+				},
+			},
+		},
+		DbPath: core.DataDir,
 	})
 }

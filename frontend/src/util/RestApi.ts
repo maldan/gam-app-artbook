@@ -57,29 +57,29 @@ export const RestApi = {
     },
   },
 
-  work: {
+  art: {
     async getList(): Promise<any> {
-      return (await Axios.get(`${API_URL}/work/list`)).data.response;
+      return (await Axios.get(`${API_URL}/art/list`)).data.response;
     },
     async get(id: string): Promise<any> {
-      return (await Axios.get(`${API_URL}/work?id=${id}`)).data.response;
+      return (await Axios.get(`${API_URL}/art?id=${id}`)).data.response;
     },
     async getYearMap(date: string): Promise<any> {
-      return (await Axios.get(`${API_URL}/work/yearMap?date=${date}`)).data.response;
+      return (await Axios.get(`${API_URL}/art/yearMap?date=${date}`)).data.response;
     },
     async update(todo: any): Promise<any> {
-      return (await Axios.patch(`${API_URL}/work`, todo)).data.response;
+      return (await Axios.patch(`${API_URL}/art`, todo)).data.response;
     },
     async add(title: string, tags: string[]): Promise<any> {
       return (
-        await Axios.post(`${API_URL}/work`, {
+        await Axios.post(`${API_URL}/art`, {
           title,
           tags,
         })
       ).data.response;
     },
     async delete(id: string): Promise<any> {
-      return (await Axios.delete(`${API_URL}/work?id=${id}`)).data.response;
+      return (await Axios.delete(`${API_URL}/art?id=${id}`)).data.response;
     },
   },
 

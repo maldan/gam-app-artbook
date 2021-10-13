@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.list">
-    <Button
+    <ui-button
       text="Add image"
       icon="add"
       @click="isAdd = true"
@@ -53,16 +53,14 @@
 </template>
 
 <script lang="ts">
-import Moment from 'moment';
 import { defineComponent } from 'vue';
 import { RestApi } from '../../util/RestApi';
-import Button from '../Button.vue';
 import Add from './Add.vue';
 import Edit from './Edit.vue';
 
 export default defineComponent({
   props: {},
-  components: { Button, Add, Edit },
+  components: { Add, Edit },
   async mounted() {
     this.refresh();
   },
