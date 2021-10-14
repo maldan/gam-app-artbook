@@ -3,7 +3,21 @@
     <ui-button
       text="Add image"
       icon="plus"
-      @click="isAdd = true"
+      @click="
+        $store.dispatch('modal/show', {
+          name: 'addTraining',
+          data: {
+            imageFile: null,
+            title: '',
+            tags: '',
+            time: '00:00',
+            created: $root.moment().format('YYYY-MM-DD HH:mm:ss'),
+          },
+          onSuccess() {
+            $store.dispatch('training/add');
+          },
+        })
+      "
       style="width: 100%; margin-bottom: 10px"
     />
 
@@ -18,11 +32,43 @@
       >
         <div :class="$style.number">{{ $store.state.training.list.length - i }}</div>
         <img
-          @click.stop="(editId = item.id), (isEdit = true)"
+          @click.stop="
+            $store.dispatch('modal/show', {
+              name: 'approve',
+              data: {
+                id: item.id,
+                title: 'Remove?',
+              },
+              onSuccess() {
+                $store.dispatch('training/delete');
+              },
+            })
+          "
+          class="clickable"
+          src="../asset/trash.svg"
+          alt=""
+          style="position: absolute; right: 15px; top: 15px"
+        />
+        <img
+          @click.stop="
+            $store.dispatch('modal/show', {
+              name: 'editTraining',
+              data: {
+                id: item.id,
+                title: item.title,
+                tags: item.tags.join(', '),
+                time: $root.moment.utc(item.time * 1000).format('HH:mm'),
+                created: $root.moment(item.created).format('YYYY-MM-DD HH:mm:ss'),
+              },
+              onSuccess() {
+                $store.dispatch('training/update');
+              },
+            })
+          "
           class="clickable"
           src="../asset/pencil.svg"
           alt=""
-          style="position: absolute; right: 12px; top: 12px"
+          style="position: absolute; right: 40px; top: 15px"
         />
 
         <img :class="$style.preview" :src="item.thumbnail" />

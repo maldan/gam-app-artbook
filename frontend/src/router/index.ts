@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import Main from '../page/Main.vue';
+import Statistics from '../page/Statistics.vue';
 import Project from '../page/Project.vue';
 import Art from '../page/Art.vue';
 import Training from '../page/Training.vue';
@@ -8,8 +8,8 @@ import Reference from '../page/Reference.vue';
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Main',
-    component: Main,
+    name: 'Statistics',
+    component: Statistics,
   },
   {
     path: '/project',
@@ -17,7 +17,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Project,
   },
   {
-    path: '/art/:id',
+    path: '/project/:id',
     name: 'Art',
     component: Art,
   },

@@ -34,6 +34,24 @@
         <img
           @click.stop="
             $store.dispatch('modal/show', {
+              name: 'approve',
+              data: {
+                id: item.id,
+                title: 'Remove?',
+              },
+              onSuccess() {
+                $store.dispatch('reference/delete');
+              },
+            })
+          "
+          class="clickable"
+          src="../asset/trash.svg"
+          alt=""
+          style="position: absolute; right: 15px; top: 15px"
+        />
+        <img
+          @click.stop="
+            $store.dispatch('modal/show', {
               name: 'editReference',
               data: {
                 id: item.id,
@@ -48,7 +66,7 @@
           class="clickable"
           src="../asset/pencil.svg"
           alt=""
-          style="position: absolute; right: 12px; top: 12px"
+          style="position: absolute; right: 40px; top: 15px"
         />
 
         <img :class="$style.preview" :src="item.thumbnail" />

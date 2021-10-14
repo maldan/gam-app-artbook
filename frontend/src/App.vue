@@ -13,9 +13,22 @@ import ModalAddProject from '../src/component/modal/ModalAddProject.vue';
 import ModalEditProject from '../src/component/modal/ModalEditProject.vue';
 import ModalAddReference from '../src/component/modal/ModalAddReference.vue';
 import ModalEditReference from '../src/component/modal/ModalEditReference.vue';
+import ModalAddTraining from '../src/component/modal/ModalAddTraining.vue';
+import ModalEditTraining from '../src/component/modal/ModalEditTraining.vue';
+import ModalAddArt from '../src/component/modal/ModalAddArt.vue';
+import ModalEditArt from '../src/component/modal/ModalEditArt.vue';
 
 export default defineComponent({
-  components: { ModalAddProject, ModalEditProject, ModalAddReference, ModalEditReference },
+  components: {
+    ModalAddProject,
+    ModalEditProject,
+    ModalAddReference,
+    ModalEditReference,
+    ModalAddTraining,
+    ModalEditTraining,
+    ModalAddArt,
+    ModalEditArt,
+  },
   async mounted() {},
   methods: {},
   data: () => {

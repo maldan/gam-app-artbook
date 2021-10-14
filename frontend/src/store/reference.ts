@@ -46,5 +46,11 @@ export default {
 
       action.dispatch('getList');
     },
+    async delete(action: ReferenceActionContext) {
+      await Axios.delete(
+        `${action.rootState.main.API_URL}/reference?id=${action.rootState.modal.data.id}`,
+      );
+      action.dispatch('getList');
+    },
   },
 };

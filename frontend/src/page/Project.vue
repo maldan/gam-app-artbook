@@ -21,13 +21,31 @@
     <!-- List -->
     <div :class="$style.item_list">
       <div
-        @click="$router.push(`/art/${item.id}`)"
+        @click="$router.push(`/project/${item.id}`)"
         class="clickable"
         v-for="(item, i) in $store.state.project.list"
         :key="item.id"
         :class="$style.block"
       >
         <div :class="$style.number">{{ $store.state.project.list.length - i }}</div>
+        <img
+          @click.stop="
+            $store.dispatch('modal/show', {
+              name: 'approve',
+              data: {
+                id: item.id,
+                title: 'Remove?',
+              },
+              onSuccess() {
+                $store.dispatch('project/delete');
+              },
+            })
+          "
+          class="clickable"
+          src="../asset/trash.svg"
+          alt=""
+          style="position: absolute; right: 15px; top: 15px"
+        />
         <img
           @click.stop="
             $store.dispatch('modal/show', {
@@ -45,7 +63,7 @@
           class="clickable"
           src="../asset/pencil.svg"
           alt=""
-          style="position: absolute; right: 12px; top: 12px"
+          style="position: absolute; right: 40px; top: 15px"
         />
 
         <img

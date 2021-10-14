@@ -1,0 +1,59 @@
+<template>
+  <div :class="$style.window">
+    <ui-input
+      placeholder="Category..."
+      @keypress.enter="$store.dispatch('modal/ok')"
+      style="margin-bottom: 10px"
+      v-model="$store.state.modal.data.title"
+    />
+    <ui-input
+      placeholder="Tags..."
+      @keypress.enter="$store.dispatch('modal/ok')"
+      style="margin-bottom: 10px"
+      v-model="$store.state.modal.data.tags"
+    />
+    <ui-input
+      placeholder="Time..."
+      @keypress.enter="$store.dispatch('modal/ok')"
+      style="margin-bottom: 10px"
+      v-model="$store.state.modal.data.time"
+    />
+    <ui-input
+      placeholder="Created..."
+      @keypress.enter="$store.dispatch('modal/ok')"
+      style="margin-bottom: 10px"
+      v-model="$store.state.modal.data.created"
+    />
+
+    <div style="display: flex">
+      <ui-button @click="$store.dispatch('modal/close')" text="Cancel" style="margin-right: 5px" />
+      <ui-button
+        @click="$store.dispatch('modal/ok')"
+        text="Save"
+        icon="check"
+        style="margin-left: 5px"
+      />
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  props: {},
+  components: {},
+  async mounted() {},
+  beforeUnmount() {},
+  methods: {},
+  data() {
+    return {};
+  },
+});
+</script>
+
+<style lang="scss" module>
+.window {
+  min-width: 320px;
+}
+</style>

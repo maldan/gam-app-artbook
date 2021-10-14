@@ -1,17 +1,35 @@
 <template>
   <div :class="$style.main">
     <ui-button
-      text="Add image"
+      text="Add art"
       icon="plus"
-      @click="isAdd = true"
+      @click="
+        $store.dispatch('modal/show', {
+          name: 'addArt',
+          data: {
+            projectId: $route.params.id,
+            imageFile: null,
+            time: '00:00',
+            created: $root.moment().format('YYYY-MM-DD HH:mm:ss'),
+          },
+          onSuccess() {
+            $store.dispatch('project/addImage');
+          },
+        })
+      "
       style="width: 100%; margin-bottom: 10px"
     />
 
     <!-- List -->
     <div :class="$style.item_list">
-      <div v-for="item in $store.state.art.art.imageList" :key="item.id" :class="$style.block">
+      <div v-for="item in $store.state.project.art.imageList" :key="item.id" :class="$style.block">
         <img
-          @click.stop="moveDown(item.id)"
+          @click.stop="
+            $store.dispatch('project/imageMoveDown', {
+              imageId: item.id,
+              projectId: $route.params.id,
+            })
+          "
           class="clickable"
           src="../asset/move_down.svg"
           alt=""
@@ -19,7 +37,20 @@
           draggable="false"
         />
         <img
-          @click.stop="(editId = item.id), (isEdit = true)"
+          @click.stop="
+            $store.dispatch('modal/show', {
+              name: 'editArt',
+              data: {
+                projectId: $route.params.id,
+                imageId: item.id,
+                time: $root.moment.utc(item.time * 1000).format('HH:mm'),
+                created: $root.moment(item.created).format('YYYY-MM-DD HH:mm:ss'),
+              },
+              onSuccess() {
+                $store.dispatch('project/updateImage');
+              },
+            })
+          "
           class="clickable"
           src="../asset/pencil.svg"
           alt=""
@@ -27,7 +58,19 @@
           draggable="false"
         />
         <img
-          @click.stop="remove(item.id)"
+          @click.stop="
+            $store.dispatch('modal/show', {
+              name: 'approve',
+              data: {
+                title: 'Remove image?',
+                projectId: $route.params.id,
+                imageId: item.id,
+              },
+              onSuccess() {
+                $store.dispatch('project/deleteImage');
+              },
+            })
+          "
           class="clickable"
           src="../asset/trash.svg"
           alt=""
@@ -61,7 +104,7 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   components: {},
   async mounted() {
-    this.$store.dispatch('art/get', this.$route.params.id as string);
+    this.$store.dispatch('project/get', this.$route.params.id as string);
   },
   methods: {},
   data: () => {

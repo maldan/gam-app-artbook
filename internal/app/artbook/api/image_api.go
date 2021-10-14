@@ -18,7 +18,7 @@ type ImageApi struct {
 func (r ImageApi) GetIndex(args ArgsImage) core.Image {
 	// Get file
 	var item core.Project
-	err := cmhp_file.ReadJSON(core.DataDir+"/work/"+args.WorkId+".json", &item)
+	err := cmhp_file.ReadJSON(core.DataDir+"/work/"+args.ProjectId+".json", &item)
 	if err != nil {
 		restserver.Fatal(500, restserver.ErrorType.NotFound, "workId", "Work not found!")
 	}
@@ -37,7 +37,7 @@ func (r ImageApi) GetIndex(args ArgsImage) core.Image {
 func (r ImageApi) PostIndex(args ArgsImage) {
 	// Create temp file
 	tempFile := os.TempDir() + "/" + cmhp_crypto.UID(10)
-	cmhp_file.WriteBin(tempFile, args.Files[0])
+	cmhp_file.WriteBin(tempFile, args.Image.Data)
 	defer cmhp_file.Delete(tempFile)
 
 	// Convert  & remove later
@@ -84,16 +84,16 @@ func (r ImageApi) PostIndex(args ArgsImage) {
 
 	// Open work and add new image
 	var work core.Project
-	cmhp_file.ReadJSON(core.DataDir+"/work/"+args.WorkId+".json", &work)
+	cmhp_file.ReadJSON(core.DataDir+"/work/"+args.ProjectId+".json", &work)
 	work.ImageList = append(work.ImageList, core.Image{
 		Id:        imageId,
-		WorkId:    args.WorkId,
+		WorkId:    args.ProjectId,
 		Url:       url,
 		Thumbnail: thumbUrl,
 		Time:      args.Time,
 		Created:   args.Created,
 	})
-	cmhp_file.WriteJSON(core.DataDir+"/work/"+args.WorkId+".json", &work)
+	cmhp_file.WriteJSON(core.DataDir+"/work/"+args.ProjectId+".json", &work)
 }
 
 // Update
