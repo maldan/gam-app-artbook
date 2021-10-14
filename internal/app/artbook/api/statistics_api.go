@@ -14,11 +14,11 @@ type StatisticsApi struct {
 
 // Get year calory stat
 func (r StatisticsApi) GetYearMap(args ArgsDate) map[string]float32 {
-	w := ArtApi{}
+	w := ProjectApi{}
 
 	// Get work list
 	files, _ := cmhp_file.List(core.DataDir + "/work")
-	workList := make([]core.Art, 0)
+	workList := make([]core.Project, 0)
 	for _, file := range files {
 		workList = append(workList, w.GetIndex(ArgsId{Id: strings.Replace(file.Name(), ".json", "", 1)}))
 	}

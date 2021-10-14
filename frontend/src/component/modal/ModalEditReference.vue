@@ -1,10 +1,10 @@
 <template>
   <div :class="$style.window">
     <ui-input
-      placeholder="Title..."
+      placeholder="Category..."
       @keypress.enter="$store.dispatch('modal/ok')"
       style="margin-bottom: 10px"
-      v-model="$store.state.modal.data.title"
+      v-model="$store.state.modal.data.category"
     />
     <ui-input
       placeholder="Tags..."
@@ -32,6 +32,7 @@ export default defineComponent({
   props: {},
   components: {},
   async mounted() {},
+  beforeUnmount() {},
   methods: {},
   data() {
     return {};

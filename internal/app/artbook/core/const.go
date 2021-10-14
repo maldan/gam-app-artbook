@@ -11,7 +11,7 @@ type Image struct {
 	Created   time.Time `json:"created"`
 }
 
-type Art struct {
+type Project struct {
 	Id        string   `json:"id"`
 	Title     string   `json:"title"`
 	Tags      []string `json:"tags"`

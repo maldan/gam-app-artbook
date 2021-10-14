@@ -1,6 +1,10 @@
 package api
 
-import "time"
+import (
+	"time"
+
+	"github.com/maldan/go-rapi/rapi_core"
+)
 
 type ArgsEmpty struct {
 }
@@ -27,10 +31,10 @@ type ArgsTraining struct {
 }
 
 type ArgsReference struct {
-	Id       string   `json:"id"`
-	Category string   `json:"category"`
-	Tags     string   `json:"tags"`
-	Files    [][]byte `json:"files"`
+	Id       string         `json:"id"`
+	Category string         `json:"category"`
+	Tags     string         `json:"tags"`
+	Image    rapi_core.File `json:"image"`
 }
 
 type ArgsDate struct {

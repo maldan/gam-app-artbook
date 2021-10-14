@@ -11,9 +11,11 @@ import { defineComponent } from 'vue';
 import Moment from 'moment';
 import ModalAddProject from '../src/component/modal/ModalAddProject.vue';
 import ModalEditProject from '../src/component/modal/ModalEditProject.vue';
+import ModalAddReference from '../src/component/modal/ModalAddReference.vue';
+import ModalEditReference from '../src/component/modal/ModalEditReference.vue';
 
 export default defineComponent({
-  components: { ModalAddProject, ModalEditProject },
+  components: { ModalAddProject, ModalEditProject, ModalAddReference, ModalEditReference },
   async mounted() {},
   methods: {},
   data: () => {
@@ -24,9 +26,9 @@ export default defineComponent({
 
       header: [
         { name: 'Statistics', url: '/' },
-        { name: 'Art', url: '/art' },
+        { name: 'Project', url: '/project' },
         { name: 'Training', url: '/training' },
-        { name: 'DB', url: '/db' },
+        { name: 'Reference', url: '/reference' },
       ],
     };
   },

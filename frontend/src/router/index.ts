@@ -1,9 +1,9 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import Main from '../page/Main.vue';
-import ArtList from '../page/ArtList.vue';
-import Work from '../page/Work.vue';
+import Project from '../page/Project.vue';
+import Art from '../page/Art.vue';
 import Training from '../page/Training.vue';
-import RefDB from '../page/RefDB.vue';
+import Reference from '../page/Reference.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -12,14 +12,14 @@ const routes: Array<RouteRecordRaw> = [
     component: Main,
   },
   {
-    path: '/art',
-    name: 'Art List',
-    component: ArtList,
+    path: '/project',
+    name: 'Project',
+    component: Project,
   },
   {
     path: '/art/:id',
     name: 'Art',
-    component: Work,
+    component: Art,
   },
   {
     path: '/training',
@@ -27,9 +27,9 @@ const routes: Array<RouteRecordRaw> = [
     component: Training,
   },
   {
-    path: '/db',
-    name: 'DB',
-    component: RefDB,
+    path: '/reference',
+    name: 'Reference',
+    component: Reference,
   },
 ];
 

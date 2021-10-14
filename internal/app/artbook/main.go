@@ -55,8 +55,10 @@ func Start(frontFs embed.FS) {
 			},
 			"/api": rapi_rest.ApiHandler{
 				Controller: map[string]interface{}{
-					"art":        api.ArtApi{},
+					"project":    api.ProjectApi{},
+					"training":   api.TrainingApi{},
 					"statistics": api.StatisticsApi{},
+					"reference":  api.ReferenceApi{},
 				},
 			},
 		},

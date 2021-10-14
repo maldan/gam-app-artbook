@@ -11,13 +11,13 @@ import (
 	"github.com/maldan/go-restserver"
 )
 
-type ArtApi struct {
+type ProjectApi struct {
 }
 
 // Get by id
-func (r ArtApi) GetIndex(args ArgsId) core.Art {
+func (r ProjectApi) GetIndex(args ArgsId) core.Project {
 	// Get file
-	var item core.Art
+	var item core.Project
 	err := cmhp_file.ReadJSON(core.DataDir+"/work/"+args.Id+".json", &item)
 	if err != nil {
 		restserver.Fatal(500, restserver.ErrorType.NotFound, "id", "Work not found!")
@@ -26,9 +26,9 @@ func (r ArtApi) GetIndex(args ArgsId) core.Art {
 }
 
 // Get list
-func (r ArtApi) GetList() []core.Art {
+func (r ProjectApi) GetList() []core.Project {
 	files, _ := cmhp_file.List(core.DataDir + "/work")
-	out := make([]core.Art, 0)
+	out := make([]core.Project, 0)
 	for _, file := range files {
 		out = append(out, r.GetIndex(ArgsId{Id: strings.Replace(file.Name(), ".json", "", 1)}))
 	}
@@ -55,16 +55,16 @@ func (r ArtApi) GetList() []core.Art {
 }
 
 // Create new
-func (r ArtApi) PostIndex(args core.Art) {
+func (r ProjectApi) PostIndex(args core.Project) {
 	args.Id = cmhp_crypto.UID(10)
 	args.ImageList = make([]core.Image, 0)
 	cmhp_file.WriteJSON(core.DataDir+"/work/"+args.Id+".json", &args)
 }
 
 // Update
-func (r ArtApi) PatchIndex(args core.Art) {
+func (r ProjectApi) PatchIndex(args core.Project) {
 	// Get file
-	var item core.Art
+	var item core.Project
 	err := cmhp_file.ReadJSON(core.DataDir+"/work/"+args.Id+".json", &item)
 	if err != nil {
 		restserver.Fatal(500, restserver.ErrorType.NotFound, "id", "Work not found!")
@@ -79,6 +79,6 @@ func (r ArtApi) PatchIndex(args core.Art) {
 }
 
 // Delete
-func (r ArtApi) DeleteIndex(args ArgsId) {
+func (r ProjectApi) DeleteIndex(args ArgsId) {
 	cmhp_file.Delete(core.DataDir + "/work/" + args.Id + ".json")
 }

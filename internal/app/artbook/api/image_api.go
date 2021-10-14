@@ -17,7 +17,7 @@ type ImageApi struct {
 // Get by id
 func (r ImageApi) GetIndex(args ArgsImage) core.Image {
 	// Get file
-	var item core.Art
+	var item core.Project
 	err := cmhp_file.ReadJSON(core.DataDir+"/work/"+args.WorkId+".json", &item)
 	if err != nil {
 		restserver.Fatal(500, restserver.ErrorType.NotFound, "workId", "Work not found!")
@@ -83,7 +83,7 @@ func (r ImageApi) PostIndex(args ArgsImage) {
 	}
 
 	// Open work and add new image
-	var work core.Art
+	var work core.Project
 	cmhp_file.ReadJSON(core.DataDir+"/work/"+args.WorkId+".json", &work)
 	work.ImageList = append(work.ImageList, core.Image{
 		Id:        imageId,
@@ -99,7 +99,7 @@ func (r ImageApi) PostIndex(args ArgsImage) {
 // Update
 func (r ImageApi) PatchIndex(args core.Image) {
 	// Open work and add new image
-	var work core.Art
+	var work core.Project
 	cmhp_file.ReadJSON(core.DataDir+"/work/"+args.WorkId+".json", &work)
 
 	// Find and update image
@@ -117,7 +117,7 @@ func (r ImageApi) PatchIndex(args core.Image) {
 // Move image down
 func (r ImageApi) PatchMoveDown(args core.Image) {
 	// Open work
-	var work core.Art
+	var work core.Project
 	cmhp_file.ReadJSON(core.DataDir+"/work/"+args.WorkId+".json", &work)
 
 	// Find and move image
@@ -142,7 +142,7 @@ func (r ImageApi) PatchMoveDown(args core.Image) {
 // Delete
 func (r ImageApi) DeleteIndex(args core.Image) {
 	// Open work and add new image
-	var work core.Art
+	var work core.Project
 	cmhp_file.ReadJSON(core.DataDir+"/work/"+args.WorkId+".json", &work)
 
 	out := make([]core.Image, 0)

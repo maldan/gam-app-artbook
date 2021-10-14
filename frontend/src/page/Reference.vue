@@ -1,44 +1,47 @@
 <template>
   <div :class="$style.main">
     <ui-button
-      text="Create new project"
+      text="Add image"
       icon="plus"
       @click="
         $store.dispatch('modal/show', {
-          name: 'addProject',
+          name: 'addReference',
           data: {
-            title: '',
+            imageFile: null,
+            category: '',
             tags: '',
           },
           onSuccess() {
-            $store.dispatch('art/addProject');
+            $store.dispatch('reference/add');
           },
         })
       "
       style="width: 100%; margin-bottom: 10px"
     />
 
+    <ui-input placeholder="Filter..." style="margin-bottom: 10px" v-model="filter" />
+
     <!-- List -->
     <div :class="$style.item_list">
       <div
-        @click="$router.push(`/work/${item.id}`)"
+        @click="show(item.url)"
         class="clickable"
-        v-for="(item, i) in $store.state.art.list"
+        v-for="(item, i) in list"
         :key="item.id"
         :class="$style.block"
       >
-        <div :class="$style.number">{{ $store.state.art.list.length - i }}</div>
+        <div :class="$style.number">{{ list.length - i }}</div>
         <img
           @click.stop="
             $store.dispatch('modal/show', {
-              name: 'editProject',
+              name: 'editReference',
               data: {
                 id: item.id,
-                title: item.title,
+                category: item.category,
                 tags: item.tags.join(', '),
               },
               onSuccess() {
-                $store.dispatch('art/updateProject');
+                $store.dispatch('reference/update');
               },
             })
           "
@@ -48,17 +51,9 @@
           style="position: absolute; right: 12px; top: 12px"
         />
 
-        <img
-          :class="$style.preview"
-          v-if="item.imageList[0]"
-          :src="item.imageList[item.imageList.length - 1].thumbnail"
-        />
+        <img :class="$style.preview" :src="item.thumbnail" />
 
-        <div :class="$style.title">{{ item.title }}</div>
-        <div v-if="item.imageList[0]" :class="$style.info">
-          <div>{{ totalTime(item.imageList) }}</div>
-          <div>{{ lastTime(item.imageList) }}</div>
-        </div>
+        <div :class="$style.title" v-html="item.category"></div>
         <div :class="$style.tags">
           <div v-for="x in item.tags" :class="$style.tag" :key="x">{{ x }}</div>
         </div>
@@ -69,34 +64,49 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Moment from 'moment';
-import Header from '../component/Header.vue';
-import List from '../component/artlist/List.vue';
 
 export default defineComponent({
-  components: { Header, List },
+  components: {},
+  computed: {
+    list(): any {
+      let list = this.$store.state.reference.list.filter((x: any) => {
+        const parts = this.filter.split(' ').filter(Boolean);
+        if (parts.length === 0) return true;
+
+        let amount = parts.length;
+
+        for (let j = 0; j < parts.length; j++) {
+          for (let i = 0; i < x.tags.length; i++) {
+            if (x.tags[i].match(parts[j])) {
+              amount -= 1;
+              if (amount <= 0) return true;
+            }
+          }
+
+          if (x.category.match(parts[j])) {
+            amount -= 1;
+            if (amount <= 0) return true;
+          }
+        }
+
+        return false;
+      });
+
+      return list.sort((a: any, b: any) => a.category.localeCompare(b.category));
+    },
+  },
   async mounted() {
-    this.$store.dispatch('art/getList');
+    this.$store.dispatch('reference/getList');
   },
   methods: {
-    totalTime(imageList: any[]) {
-      let out = 0;
-      for (let i = 0; i < imageList.length; i++) {
-        out += ~~imageList[i].time;
-      }
-      const h = ~~(out / 3600);
-      const m = (out / 60) % 60;
-      return `${h} h ${m} m`;
-    },
-    lastTime(imageList: any[]) {
-      let times = (JSON.parse(JSON.stringify(imageList)) as any).sort(
-        (a: any, b: any) => new Date(b.created).getTime() - new Date(a.created).getTime(),
-      );
-      return Moment(times[0].created).format('DD MMM YYYY');
+    show(url: string) {
+      window.open(url, '_blank');
     },
   },
   data: () => {
-    return {};
+    return {
+      filter: '',
+    };
   },
 });
 </script>
@@ -104,17 +114,14 @@ export default defineComponent({
 <style lang="scss" module>
 .main {
   padding: 10px;
-  height: calc(100% - 45px);
+  height: calc(100% - 70px);
   box-sizing: border-box;
-
-  //.list {
-  //  height: calc(100% - 50px);
 
   .item_list {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 10px;
-    height: calc(100% - 50px);
+    height: calc(100% - 70px);
     overflow-y: auto;
     grid-auto-rows: max-content;
 
@@ -140,6 +147,12 @@ export default defineComponent({
         color: #dadada;
         font-weight: bold;
         margin-top: 10px;
+        display: flex;
+
+        .hilight {
+          background: #fffb00;
+          color: #2b2b2b;
+        }
       }
 
       .number {
@@ -205,5 +218,4 @@ export default defineComponent({
     }
   }
 }
-//}
 </style>

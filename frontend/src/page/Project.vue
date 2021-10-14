@@ -1,106 +1,118 @@
 <template>
-  <div :class="$style.list">
+  <div :class="$style.main">
     <ui-button
-      text="Add image"
+      text="Create new project"
       icon="plus"
-      @click="isAdd = true"
+      @click="
+        $store.dispatch('modal/show', {
+          name: 'addProject',
+          data: {
+            title: '',
+            tags: '',
+          },
+          onSuccess() {
+            $store.dispatch('project/add');
+          },
+        })
+      "
       style="width: 100%; margin-bottom: 10px"
     />
-
-    <ui-input placeholder="Filter..." style="margin-bottom: 10px" v-model="filter" />
 
     <!-- List -->
     <div :class="$style.item_list">
       <div
-        @click="show(item.url)"
+        @click="$router.push(`/art/${item.id}`)"
         class="clickable"
-        v-for="(item, i) in list.filter((x) => x.category.match(filter))"
+        v-for="(item, i) in $store.state.project.list"
         :key="item.id"
         :class="$style.block"
       >
-        <div :class="$style.number">{{ list.length - i }}</div>
+        <div :class="$style.number">{{ $store.state.project.list.length - i }}</div>
         <img
-          @click.stop="(editId = item.id), (isEdit = true)"
+          @click.stop="
+            $store.dispatch('modal/show', {
+              name: 'editProject',
+              data: {
+                id: item.id,
+                title: item.title,
+                tags: item.tags.join(', '),
+              },
+              onSuccess() {
+                $store.dispatch('project/update');
+              },
+            })
+          "
           class="clickable"
-          src="../../asset/pencil.svg"
+          src="../asset/pencil.svg"
           alt=""
           style="position: absolute; right: 12px; top: 12px"
         />
 
-        <img :class="$style.preview" :src="item.thumbnail" />
+        <img
+          :class="$style.preview"
+          v-if="item.imageList[0]"
+          :src="item.imageList[item.imageList.length - 1].thumbnail"
+        />
 
-        <div
-          :class="$style.title"
-          v-html="
-            filter
-              ? item.category.replace(
-                  new RegExp('(' + filter + ')'),
-                  `<div class='${$style.hilight}'>$1</div>`,
-                )
-              : item.category
-          "
-        ></div>
+        <div :class="$style.title">{{ item.title }}</div>
+        <div v-if="item.imageList[0]" :class="$style.info">
+          <div>{{ totalTime(item.imageList) }}</div>
+          <div>{{ lastTime(item.imageList) }}</div>
+        </div>
         <div :class="$style.tags">
           <div v-for="x in item.tags" :class="$style.tag" :key="x">{{ x }}</div>
         </div>
       </div>
     </div>
-
-    <!-- Modal -->
-    <Add v-if="isAdd" @close="(isAdd = false), refresh()" />
-    <Edit :id="editId" v-if="isEdit" @close="(isEdit = false), refresh()" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { RestApi } from '../../util/RestApi';
-import Add from './Add.vue';
-import Edit from './Edit.vue';
-import Input from '../Input.vue';
+import Moment from 'moment';
 
 export default defineComponent({
-  props: {},
-  components: { Add, Edit, Input },
+  components: {},
   async mounted() {
-    this.refresh();
+    this.$store.dispatch('project/getList');
   },
   methods: {
-    async refresh() {
-      this.list = await RestApi.reference.getList();
-    },
-    async remove(id: string) {
-      if (confirm('Are you sure?')) {
-        // await RestApi.todo.delete(id);
+    totalTime(imageList: any[]) {
+      let out = 0;
+      for (let i = 0; i < imageList.length; i++) {
+        out += ~~imageList[i].time;
       }
-      this.refresh();
+      const h = ~~(out / 3600);
+      const m = (out / 60) % 60;
+      return `${h} h ${m} m`;
     },
-    show(url: string) {
-      window.open(url, '_blank');
+    lastTime(imageList: any[]) {
+      let times = (JSON.parse(JSON.stringify(imageList)) as any).sort(
+        (a: any, b: any) => new Date(b.created).getTime() - new Date(a.created).getTime(),
+      );
+      return Moment(times[0].created).format('DD MMM YYYY');
     },
   },
   data: () => {
-    return {
-      isAdd: false,
-      isEdit: false,
-      editId: '',
-      list: [] as any[],
-      selected: null as any,
-      filter: '',
-    };
+    return {};
   },
 });
 </script>
 
 <style lang="scss" module>
-.list {
-  height: calc(100% - 90px);
+.main {
+  padding: 10px;
+  height: calc(100% - 45px);
+  box-sizing: border-box;
+
+  //.list {
+  //  height: calc(100% - 50px);
 
   .item_list {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 10px;
-    height: calc(100% - 65px);
+    height: calc(100% - 50px);
     overflow-y: auto;
     grid-auto-rows: max-content;
 
@@ -126,12 +138,6 @@ export default defineComponent({
         color: #dadada;
         font-weight: bold;
         margin-top: 10px;
-        display: flex;
-
-        .hilight {
-          background: #fffb00;
-          color: #2b2b2b;
-        }
       }
 
       .number {
@@ -181,7 +187,7 @@ export default defineComponent({
 }
 
 @media (max-width: 1024px) {
-  .list {
+  .main {
     .item_list {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -191,10 +197,11 @@ export default defineComponent({
 }
 
 @media (max-width: 576px) {
-  .list {
+  .main {
     .item_list {
       grid-template-columns: 1fr 1fr;
     }
   }
 }
+//}
 </style>

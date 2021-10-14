@@ -40,7 +40,7 @@ func (r ReferenceApi) GetList() []core.Reference {
 func (r ReferenceApi) PostIndex(args ArgsReference) {
 	// Create temp file
 	tempFile := os.TempDir() + "/" + cmhp_crypto.UID(10)
-	cmhp_file.WriteBin(tempFile, args.Files[0])
+	cmhp_file.WriteBin(tempFile, args.Image.Data)
 	defer cmhp_file.Delete(tempFile)
 
 	// Convert  & remove later
