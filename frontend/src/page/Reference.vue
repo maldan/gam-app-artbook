@@ -137,7 +137,7 @@ export default defineComponent({
 
   .item_list {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     gap: 10px;
     height: calc(100% - 70px);
     overflow-y: auto;
@@ -215,6 +215,46 @@ export default defineComponent({
           margin-top: 10px;
         }
       }
+    }
+  }
+}
+
+@media (max-width: 2400px) {
+  .main {
+    .item_list {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+      gap: 10px;
+    }
+  }
+}
+
+@media (max-width: 2100px) {
+  .main {
+    .item_list {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+      gap: 10px;
+    }
+  }
+}
+
+@media (max-width: 1600px) {
+  .main {
+    .item_list {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      gap: 10px;
+    }
+  }
+}
+
+@media (max-width: 1440px) {
+  .main {
+    .item_list {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 10px;
     }
   }
 }
