@@ -4,6 +4,7 @@ import (
 	"embed"
 	"flag"
 	"fmt"
+	"github.com/maldan/go-rapi/rapi_file"
 
 	"github.com/maldan/gam-app-artbook/internal/app/artbook/api"
 	"github.com/maldan/gam-app-artbook/internal/app/artbook/core"
@@ -27,6 +28,7 @@ func Start(frontFs embed.FS) {
 
 	// Set
 	core.DataDir = *dataDir
+	core.Hostname = fmt.Sprintf("%v:%v", *host, *port)
 
 	// Init s3
 	cmhp_s3.Start(core.DataDir + "/config.json")
@@ -52,6 +54,9 @@ func Start(frontFs embed.FS) {
 			"/": rapi_vfs.VFSHandler{
 				Root: "frontend/build",
 				Fs:   frontFs,
+			},
+			"/db": rapi_file.FileHandler{
+				Root: core.DataDir,
 			},
 			"/api": rapi_rest.ApiHandler{
 				Controller: map[string]interface{}{

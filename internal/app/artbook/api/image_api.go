@@ -37,7 +37,7 @@ func (r ImageApi) GetIndex(args ArgsImage) core.Image {
 func (r ImageApi) PostIndex(args ArgsImage) {
 	// Create temp file
 	tempFile := os.TempDir() + "/" + cmhp_crypto.UID(10)
-	cmhp_file.WriteBin(tempFile, args.Image.Data)
+	cmhp_file.Write(tempFile, args.Image.Data)
 	defer cmhp_file.Delete(tempFile)
 
 	// Convert  & remove later
@@ -93,7 +93,7 @@ func (r ImageApi) PostIndex(args ArgsImage) {
 		Time:      args.Time,
 		Created:   args.Created,
 	})
-	cmhp_file.WriteJSON(core.DataDir+"/work/"+args.ProjectId+".json", &work)
+	cmhp_file.Write(core.DataDir+"/work/"+args.ProjectId+".json", &work)
 }
 
 // Update
@@ -111,7 +111,7 @@ func (r ImageApi) PatchIndex(args core.Image) {
 	}
 
 	// Save
-	cmhp_file.WriteJSON(core.DataDir+"/work/"+args.WorkId+".json", &work)
+	cmhp_file.Write(core.DataDir+"/work/"+args.WorkId+".json", &work)
 }
 
 // Move image down
@@ -136,7 +136,7 @@ func (r ImageApi) PatchMoveDown(args core.Image) {
 	}
 
 	// Save
-	cmhp_file.WriteJSON(core.DataDir+"/work/"+args.WorkId+".json", &work)
+	cmhp_file.Write(core.DataDir+"/work/"+args.WorkId+".json", &work)
 }
 
 // Delete
@@ -154,5 +154,5 @@ func (r ImageApi) DeleteIndex(args core.Image) {
 	work.ImageList = out
 
 	// Save
-	cmhp_file.WriteJSON(core.DataDir+"/work/"+args.WorkId+".json", &work)
+	cmhp_file.Write(core.DataDir+"/work/"+args.WorkId+".json", &work)
 }

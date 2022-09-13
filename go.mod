@@ -1,14 +1,18 @@
 module github.com/maldan/gam-app-artbook
 
-go 1.16
+go 1.18
 
-// replace github.com/maldan/go-restserver => ../../../go_lib/restserver
-// replace github.com/maldan/go-cmhp => ../../../go_lib/cmhp
+replace github.com/maldan/go-rapi => ../../go_lib/rapi
+
+replace github.com/maldan/go-cmhp => ../../go_lib/cmhp
 
 require (
-	github.com/k0kubun/pp v3.0.1+incompatible
-	github.com/maldan/go-cmhp v0.0.20
-	github.com/maldan/go-rapi v0.0.6 // indirect
+	github.com/maldan/go-cmhp v0.0.23
+	github.com/maldan/go-rapi v0.0.6
 	github.com/maldan/go-restserver v1.2.8
-	github.com/mattn/go-colorable v0.1.8 // indirect
+)
+
+require (
+	github.com/aws/aws-sdk-go v1.40.6 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 )

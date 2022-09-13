@@ -43,5 +43,6 @@ type Config struct {
 	SPACES_BUCKET   string `json:"SPACES_BUCKET"`
 }
 
+var Hostname = ""
 var DataDir = ""
 var AppConfig = Config{}

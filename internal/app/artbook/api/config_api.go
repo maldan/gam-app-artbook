@@ -10,7 +10,7 @@ type ConfigApi struct {
 
 // Save config
 func (r ConfigApi) PostIndex(args core.Config) {
-	cmhp_file.WriteJSON(core.DataDir+"/config.json", &args)
+	cmhp_file.Write(core.DataDir+"/config.json", &args)
 }
 
 // Get config

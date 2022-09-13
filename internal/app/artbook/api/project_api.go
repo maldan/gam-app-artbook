@@ -22,6 +22,12 @@ func (r ProjectApi) GetIndex(args ArgsId) core.Project {
 	if err != nil {
 		restserver.Fatal(500, restserver.ErrorType.NotFound, "id", "Work not found!")
 	}
+
+	for i, _ := range item.ImageList {
+		item.ImageList[i].Url = "//" + core.Hostname + "/db" + item.ImageList[i].Url
+		item.ImageList[i].Thumbnail = "//" + core.Hostname + "/db" + item.ImageList[i].Thumbnail
+	}
+
 	return item
 }
 
@@ -30,7 +36,7 @@ func (r ProjectApi) GetList() []core.Project {
 	files, _ := cmhp_file.List(core.DataDir + "/work")
 	out := make([]core.Project, 0)
 	for _, file := range files {
-		out = append(out, r.GetIndex(ArgsId{Id: strings.Replace(file.Name(), ".json", "", 1)}))
+		out = append(out, r.GetIndex(ArgsId{Id: strings.Replace(file.Name, ".json", "", 1)}))
 	}
 	sort.SliceStable(out, func(i, j int) bool {
 		// First max date
@@ -58,7 +64,7 @@ func (r ProjectApi) GetList() []core.Project {
 func (r ProjectApi) PostIndex(args core.Project) {
 	args.Id = cmhp_crypto.UID(10)
 	args.ImageList = make([]core.Image, 0)
-	cmhp_file.WriteJSON(core.DataDir+"/work/"+args.Id+".json", &args)
+	cmhp_file.Write(core.DataDir+"/work/"+args.Id+".json", &args)
 }
 
 // Update
@@ -75,7 +81,7 @@ func (r ProjectApi) PatchIndex(args core.Project) {
 	item.Tags = args.Tags
 
 	// Write to file
-	cmhp_file.WriteJSON(core.DataDir+"/work/"+args.Id+".json", &item)
+	cmhp_file.Write(core.DataDir+"/work/"+args.Id+".json", &item)
 }
 
 // Delete

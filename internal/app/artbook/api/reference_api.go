@@ -31,7 +31,10 @@ func (r ReferenceApi) GetList() []core.Reference {
 	files, _ := cmhp_file.List(core.DataDir + "/reference")
 	out := make([]core.Reference, 0)
 	for _, file := range files {
-		out = append(out, r.GetIndex(ArgsId{Id: strings.Replace(file.Name(), ".json", "", 1)}))
+		x := r.GetIndex(ArgsId{Id: strings.Replace(file.Name, ".json", "", 1)})
+		x.Url = "//" + core.Hostname + "/db" + x.Url
+		x.Thumbnail = "//" + core.Hostname + "/db" + x.Thumbnail
+		out = append(out, x)
 	}
 	return out
 }
@@ -40,7 +43,7 @@ func (r ReferenceApi) GetList() []core.Reference {
 func (r ReferenceApi) PostIndex(args ArgsReference) {
 	// Create temp file
 	tempFile := os.TempDir() + "/" + cmhp_crypto.UID(10)
-	cmhp_file.WriteBin(tempFile, args.Image.Data)
+	cmhp_file.Write(tempFile, args.Image.Data)
 	defer cmhp_file.Delete(tempFile)
 
 	// Convert  & remove later
@@ -99,7 +102,7 @@ func (r ReferenceApi) PostIndex(args ArgsReference) {
 	}
 
 	// Save to file
-	cmhp_file.WriteJSON(core.DataDir+"/reference/"+reference.Id+".json", &reference)
+	cmhp_file.Write(core.DataDir+"/reference/"+reference.Id+".json", &reference)
 }
 
 // Update
@@ -116,7 +119,7 @@ func (r ReferenceApi) PatchIndex(args core.Reference) {
 	item.Tags = args.Tags
 
 	// Write to file
-	cmhp_file.WriteJSON(core.DataDir+"/reference/"+args.Id+".json", &item)
+	cmhp_file.Write(core.DataDir+"/reference/"+args.Id+".json", &item)
 }
 
 // Delete

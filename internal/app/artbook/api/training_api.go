@@ -9,7 +9,6 @@ import (
 	"github.com/maldan/go-cmhp/cmhp_crypto"
 	"github.com/maldan/go-cmhp/cmhp_file"
 	"github.com/maldan/go-cmhp/cmhp_process"
-	"github.com/maldan/go-cmhp/cmhp_s3"
 	"github.com/maldan/go-restserver"
 )
 
@@ -32,11 +31,15 @@ func (r TrainingApi) GetList() []core.Training {
 	files, _ := cmhp_file.List(core.DataDir + "/training")
 	out := make([]core.Training, 0)
 	for _, file := range files {
-		out = append(out, r.GetIndex(ArgsId{Id: strings.Replace(file.Name(), ".json", "", 1)}))
+		x := r.GetIndex(ArgsId{Id: strings.Replace(file.Name, ".json", "", 1)})
+		x.Url = "//" + core.Hostname + "/db" + x.Url
+		x.Thumbnail = "//" + core.Hostname + "/db" + x.Thumbnail
+		out = append(out, x)
 	}
 	sort.SliceStable(out, func(i, j int) bool {
 		return out[i].Created.Unix() > out[j].Created.Unix()
 	})
+
 	return out
 }
 
@@ -44,23 +47,22 @@ func (r TrainingApi) GetList() []core.Training {
 func (r TrainingApi) PostIndex(args ArgsTraining) {
 	// Create temp file
 	tempFile := os.TempDir() + "/" + cmhp_crypto.UID(10)
-	cmhp_file.WriteBin(tempFile, args.Image.Data)
+	cmhp_file.Write(tempFile, args.Image.Data)
 	defer cmhp_file.Delete(tempFile)
 
-	// Convert  & remove later
-	cmhp_process.Exec("magick", tempFile, "-quality", "90", "-define", "webp:lossless=false", tempFile+".webp")
-	defer cmhp_file.Delete(tempFile + ".webp")
-	imageId, err := cmhp_file.HashSha1(tempFile + ".webp")
-	if err != nil {
-		restserver.Fatal(500, restserver.ErrorType.Unknown, "id", err.Error())
-	}
+	// Final
+	imageId := cmhp_crypto.UID(12)
+	finalPath := "/art_training/" + imageId + ".webp"
+	finalPathThumbnail := "/art_training/" + imageId + "_thumbnail.webp"
 
-	// Thumbnail & remove later
-	cmhp_process.Exec("magick", tempFile, "-quality", "90", "-define", "webp:lossless=false", "-thumbnail", "256x256^", "-gravity", "center", "-extent", "256x256", tempFile+"_thumbnail.webp")
-	defer cmhp_file.Delete(tempFile + "_thumbnail.webp")
+	// Convert
+	cmhp_process.Exec("magick", tempFile, "-quality", "90", "-define", "webp:lossless=false", core.DataDir+finalPath)
+
+	// Thumbnail
+	cmhp_process.Exec("magick", tempFile, "-quality", "90", "-define", "webp:lossless=false", "-thumbnail", "256x256^", "-gravity", "center", "-extent", "256x256", core.DataDir+finalPathThumbnail)
 
 	// Upload image to s3
-	image, err := cmhp_file.ReadBin(tempFile + ".webp")
+	/*image, err := cmhp_file.ReadBin(tempFile + ".webp")
 	if err != nil {
 		restserver.Fatal(500, restserver.ErrorType.Unknown, "id", err.Error())
 	}
@@ -72,10 +74,10 @@ func (r TrainingApi) PostIndex(args ArgsTraining) {
 	})
 	if err != nil {
 		restserver.Fatal(500, restserver.ErrorType.Unknown, "id", err.Error())
-	}
+	}*/
 
 	// Upload thumbnail to s3
-	thumb, err := cmhp_file.ReadBin(tempFile + "_thumbnail.webp")
+	/*thumb, err := cmhp_file.ReadBin(tempFile + "_thumbnail.webp")
 	if err != nil {
 		restserver.Fatal(500, restserver.ErrorType.Unknown, "id", err.Error())
 	}
@@ -87,7 +89,7 @@ func (r TrainingApi) PostIndex(args ArgsTraining) {
 	})
 	if err != nil {
 		restserver.Fatal(500, restserver.ErrorType.Unknown, "id", err.Error())
-	}
+	}*/
 
 	// Create new training
 	training := core.Training{
@@ -95,13 +97,13 @@ func (r TrainingApi) PostIndex(args ArgsTraining) {
 		Title:     args.Title,
 		Tags:      strings.Split(args.Tags, ","),
 		Time:      args.Time,
-		Url:       url,
-		Thumbnail: thumbUrl,
+		Url:       finalPath,
+		Thumbnail: finalPathThumbnail,
 		Created:   args.Created,
 	}
 
 	// Save to file
-	cmhp_file.WriteJSON(core.DataDir+"/training/"+training.Id+".json", &training)
+	cmhp_file.Write(core.DataDir+"/training/"+training.Id+".json", &training)
 }
 
 // Update
@@ -120,7 +122,7 @@ func (r TrainingApi) PatchIndex(args core.Training) {
 	item.Created = args.Created
 
 	// Write to file
-	cmhp_file.WriteJSON(core.DataDir+"/training/"+args.Id+".json", &item)
+	cmhp_file.Write(core.DataDir+"/training/"+args.Id+".json", &item)
 }
 
 // Delete

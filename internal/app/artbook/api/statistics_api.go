@@ -20,7 +20,7 @@ func (r StatisticsApi) GetYearMap(args ArgsDate) map[string]float32 {
 	files, _ := cmhp_file.List(core.DataDir + "/work")
 	workList := make([]core.Project, 0)
 	for _, file := range files {
-		workList = append(workList, w.GetIndex(ArgsId{Id: strings.Replace(file.Name(), ".json", "", 1)}))
+		workList = append(workList, w.GetIndex(ArgsId{Id: strings.Replace(file.Name, ".json", "", 1)}))
 	}
 
 	// Get training list
@@ -28,7 +28,7 @@ func (r StatisticsApi) GetYearMap(args ArgsDate) map[string]float32 {
 	files, _ = cmhp_file.List(core.DataDir + "/training")
 	trainingList := make([]core.Training, 0)
 	for _, file := range files {
-		trainingList = append(trainingList, t.GetIndex(ArgsId{Id: strings.Replace(file.Name(), ".json", "", 1)}))
+		trainingList = append(trainingList, t.GetIndex(ArgsId{Id: strings.Replace(file.Name, ".json", "", 1)}))
 	}
 
 	// Fill empty
